@@ -61,6 +61,6 @@ public class PasswordStrengthMeterTest {
 
     private void assertStrength(String password, PasswordStrength expStr) {
         PasswordStrength result = meter.meter(password);
-        Assertions.assertThat(expStr).isEqualTo(result);
+        Assertions.assertThat(result).isEqualTo(expStr);
     }
 }
