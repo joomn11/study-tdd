@@ -7,13 +7,19 @@ public class ExpiryDateCalculator {
 
     public LocalDate calculateExpiryDate(PayDate payDate) {
 
-        int addedMonths = payDate.getPayAmount() / 10_000;
+        int addedMonths = getAddedMonths(payDate);
 
         if (payDate.getFirstBillingDate() != null) {
             return expiryDateUsingFirstBillingDate(payDate, addedMonths);
         } else {
             return payDate.getBillingDate().plusMonths(addedMonths);
         }
+    }
+
+    private int getAddedMonths(PayDate payDate) {
+
+        return payDate.getPayAmount() >= 100_000 ?
+            12 + (payDate.getPayAmount() - 100_000) / 10_000 : payDate.getPayAmount() / 10_000;
     }
 
     private LocalDate expiryDateUsingFirstBillingDate(PayDate payDate, int addedMonths) {
