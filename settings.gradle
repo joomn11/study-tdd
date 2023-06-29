@@ -1,3 +1,3 @@
 rootProject.name = 'study-tdd'
 
-include 'chap02'
+include 'chap02', 'junit-test'
