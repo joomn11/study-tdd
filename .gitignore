@@ -2,8 +2,10 @@
 !.mvn/wrapper/maven-wrapper.jar
 
 .gradle
+**/out/
 **/build/
 !src/**/build/
+**/*.iml
 
 # Ignore Gradle GUI config
 gradle-app.setting
