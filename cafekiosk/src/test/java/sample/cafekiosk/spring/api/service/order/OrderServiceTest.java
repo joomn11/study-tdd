@@ -17,6 +17,8 @@ import sample.cafekiosk.spring.api.domain.product.Product;
 import sample.cafekiosk.spring.api.domain.product.ProductRepository;
 import sample.cafekiosk.spring.api.domain.product.ProductSellingStatus;
 import sample.cafekiosk.spring.api.domain.product.ProductType;
+import sample.cafekiosk.spring.api.domain.stock.Stock;
+import sample.cafekiosk.spring.api.domain.stock.StockRepository;
 import sample.cafekiosk.spring.api.service.order.response.OrderResponse;
 
 @SpringBootTest
@@ -28,6 +30,9 @@ class OrderServiceTest {
 
     @Autowired
     private OrderRepository orderRepository;
+
+    @Autowired
+    private StockRepository stockRepository;
 
     @Autowired
     private OrderProductRepository orderProductRepository;
@@ -99,6 +104,75 @@ class OrderServiceTest {
                       Tuple.tuple("001", 1000),
                       Tuple.tuple("001", 1000)
                   );
+    }
+
+    @Test
+    @DisplayName("재고와 관련된 상품이 포함되어 있는 주문번호 리스트를 받아 주문을 생성한다")
+    void createOrderWithStock() {
+        // given
+        LocalDateTime registeredDateTime = LocalDateTime.now();
+
+        Product product1 = createProduct(ProductType.BOTTLE, "001", 1000);
+        Product product2 = createProduct(ProductType.BAKERY, "002", 3000);
+        Product product3 = createProduct(ProductType.HANDMADE, "003", 5000);
+        productRepository.saveAll(List.of(product1, product2, product3));
+
+        Stock stock1 = Stock.create("001", 2);
+        Stock stock2 = Stock.create("002", 2);
+        stockRepository.saveAll(List.of(stock1, stock2));
+
+        OrderCreateRequest request = OrderCreateRequest.builder()
+                                                       .productNumbers(List.of("001", "002", "001", "003"))
+                                                       .build();
+        // when
+        OrderResponse orderResponse = orderService.createOrder(request, registeredDateTime);
+
+        // then
+        Assertions.assertThat(orderResponse.getId()).isNotNull();
+        Assertions.assertThat(orderResponse)
+                  .extracting("registeredDateTime", "totalPrice")
+                  .contains(registeredDateTime, 10000);
+        Assertions.assertThat(orderResponse.getProducts()).hasSize(4)
+                  .extracting("productNumber", "price")
+                  .containsExactlyInAnyOrder(
+                      Tuple.tuple("001", 1000),
+                      Tuple.tuple("001", 1000),
+                      Tuple.tuple("003", 5000),
+                      Tuple.tuple("002", 3000)
+                  );
+
+        List<Stock> stocks = stockRepository.findAll();
+        Assertions.assertThat(stocks).hasSize(2)
+                  .extracting("productNumber", "quantity")
+                  .containsExactlyInAnyOrder(
+                      Tuple.tuple("001", 0),
+                      Tuple.tuple("002", 1)
+                  );
+    }
+
+    @Test
+    @DisplayName("재고가 부족한 상품으로 주문을 생성하려는 경우 예외가 발생한다")
+    void createOrderWithNoStock() {
+        // given
+        LocalDateTime registeredDateTime = LocalDateTime.now();
+
+        Product product1 = createProduct(ProductType.BOTTLE, "001", 1000);
+        Product product2 = createProduct(ProductType.BAKERY, "002", 3000);
+        Product product3 = createProduct(ProductType.HANDMADE, "003", 5000);
+        productRepository.saveAll(List.of(product1, product2, product3));
+
+        Stock stock1 = Stock.create("001", 2);
+        Stock stock2 = Stock.create("002", 2);
+        stock1.deduceQuantity(1); //TODO
+        stockRepository.saveAll(List.of(stock1, stock2));
+
+        OrderCreateRequest request = OrderCreateRequest.builder()
+                                                       .productNumbers(List.of("001", "002", "001", "003"))
+                                                       .build();
+        // when then
+        Assertions.assertThatThrownBy(() -> orderService.createOrder(request, registeredDateTime))
+                  .isInstanceOf(IllegalArgumentException.class)
+                  .hasMessage("재고가 부족한 상품이 있습니다");
     }
 
     private Product createProduct(ProductType type, String productNumber, int price) {
