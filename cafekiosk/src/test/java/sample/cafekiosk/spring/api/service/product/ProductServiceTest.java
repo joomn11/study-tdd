@@ -9,11 +9,11 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
-import sample.cafekiosk.spring.api.controller.product.dto.request.ProductCreateRequest;
 import sample.cafekiosk.spring.api.domain.product.Product;
 import sample.cafekiosk.spring.api.domain.product.ProductRepository;
 import sample.cafekiosk.spring.api.domain.product.ProductSellingStatus;
 import sample.cafekiosk.spring.api.domain.product.ProductType;
+import sample.cafekiosk.spring.api.service.product.request.ProductCreateServiceRequest;
 import sample.cafekiosk.spring.api.service.product.response.ProductResponse;
 
 @SpringBootTest
@@ -38,12 +38,12 @@ class ProductServiceTest {
         Product product = createProduct("001", ProductType.HANDMADE, ProductSellingStatus.SELLING, "아메리카노", 4000);
         productRepository.save(product);
 
-        ProductCreateRequest request = ProductCreateRequest.builder()
-                                                           .type(ProductType.HANDMADE)
-                                                           .sellingStatus(ProductSellingStatus.SELLING)
-                                                           .name("카푸치노")
-                                                           .price(5000)
-                                                           .build();
+        ProductCreateServiceRequest request = ProductCreateServiceRequest.builder()
+                                                                         .type(ProductType.HANDMADE)
+                                                                         .sellingStatus(ProductSellingStatus.SELLING)
+                                                                         .name("카푸치노")
+                                                                         .price(5000)
+                                                                         .build();
         // when
         ProductResponse productResponse = productService.createProduct(request);
 
@@ -65,12 +65,12 @@ class ProductServiceTest {
     @DisplayName("상품이 하나도 없는 경우 신규 상품을 등록하면 상품번호는 001이다")
     void createProductWhenProductsIsEmpty() {
         // given
-        ProductCreateRequest request = ProductCreateRequest.builder()
-                                                           .type(ProductType.HANDMADE)
-                                                           .sellingStatus(ProductSellingStatus.SELLING)
-                                                           .name("카푸치노")
-                                                           .price(5000)
-                                                           .build();
+        ProductCreateServiceRequest request = ProductCreateServiceRequest.builder()
+                                                                         .type(ProductType.HANDMADE)
+                                                                         .sellingStatus(ProductSellingStatus.SELLING)
+                                                                         .name("카푸치노")
+                                                                         .price(5000)
+                                                                         .build();
         // when
         ProductResponse productResponse = productService.createProduct(request);
 

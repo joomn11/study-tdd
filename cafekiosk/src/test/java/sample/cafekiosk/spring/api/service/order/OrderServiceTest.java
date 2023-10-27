@@ -10,7 +10,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
-import sample.cafekiosk.spring.api.controller.order.request.OrderCreateRequest;
 import sample.cafekiosk.spring.api.domain.order.OrderRepository;
 import sample.cafekiosk.spring.api.domain.orderproduct.OrderProductRepository;
 import sample.cafekiosk.spring.api.domain.product.Product;
@@ -19,6 +18,7 @@ import sample.cafekiosk.spring.api.domain.product.ProductSellingStatus;
 import sample.cafekiosk.spring.api.domain.product.ProductType;
 import sample.cafekiosk.spring.api.domain.stock.Stock;
 import sample.cafekiosk.spring.api.domain.stock.StockRepository;
+import sample.cafekiosk.spring.api.service.order.request.OrderCreateServiceRequest;
 import sample.cafekiosk.spring.api.service.order.response.OrderResponse;
 
 @SpringBootTest
@@ -58,9 +58,9 @@ class OrderServiceTest {
         Product product3 = createProduct(ProductType.HANDMADE, "003", 5000);
         productRepository.saveAll(List.of(product1, product2, product3));
 
-        OrderCreateRequest request = OrderCreateRequest.builder()
-                                                       .productNumbers(List.of("001", "002"))
-                                                       .build();
+        OrderCreateServiceRequest request = OrderCreateServiceRequest.builder()
+                                                                     .productNumbers(List.of("001", "002"))
+                                                                     .build();
         // when
         OrderResponse orderResponse = orderService.createOrder(request, registeredDateTime);
 
@@ -88,9 +88,9 @@ class OrderServiceTest {
         Product product3 = createProduct(ProductType.HANDMADE, "003", 5000);
         productRepository.saveAll(List.of(product1, product2, product3));
 
-        OrderCreateRequest request = OrderCreateRequest.builder()
-                                                       .productNumbers(List.of("001", "001"))
-                                                       .build();
+        OrderCreateServiceRequest request = OrderCreateServiceRequest.builder()
+                                                                     .productNumbers(List.of("001", "001"))
+                                                                     .build();
         // when
         OrderResponse orderResponse = orderService.createOrder(request, registeredDateTime);
 
@@ -122,9 +122,9 @@ class OrderServiceTest {
         Stock stock2 = Stock.create("002", 2);
         stockRepository.saveAll(List.of(stock1, stock2));
 
-        OrderCreateRequest request = OrderCreateRequest.builder()
-                                                       .productNumbers(List.of("001", "002", "001", "003"))
-                                                       .build();
+        OrderCreateServiceRequest request = OrderCreateServiceRequest.builder()
+                                                                     .productNumbers(List.of("001", "002", "001", "003"))
+                                                                     .build();
         // when
         OrderResponse orderResponse = orderService.createOrder(request, registeredDateTime);
 
@@ -167,9 +167,9 @@ class OrderServiceTest {
         stock1.deduceQuantity(1); //TODO
         stockRepository.saveAll(List.of(stock1, stock2));
 
-        OrderCreateRequest request = OrderCreateRequest.builder()
-                                                       .productNumbers(List.of("001", "002", "001", "003"))
-                                                       .build();
+        OrderCreateServiceRequest request = OrderCreateServiceRequest.builder()
+                                                                     .productNumbers(List.of("001", "002", "001", "003"))
+                                                                     .build();
         // when then
         Assertions.assertThatThrownBy(() -> orderService.createOrder(request, registeredDateTime))
                   .isInstanceOf(IllegalArgumentException.class)
