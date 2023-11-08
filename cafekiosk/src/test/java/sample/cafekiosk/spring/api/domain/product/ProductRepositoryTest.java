@@ -11,12 +11,11 @@ import org.assertj.core.groups.Tuple;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.test.context.ActiveProfiles;
+import org.springframework.transaction.annotation.Transactional;
+import sample.cafekiosk.spring.IntegrationSupport;
 
-@DataJpaTest
-@ActiveProfiles("test")
-class ProductRepositoryTest {
+@Transactional
+class ProductRepositoryTest extends IntegrationSupport {
 
     @Autowired
     private ProductRepository productRepository;

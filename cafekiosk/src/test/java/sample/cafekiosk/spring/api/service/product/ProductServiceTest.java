@@ -7,8 +7,7 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.ActiveProfiles;
+import sample.cafekiosk.spring.IntegrationSupport;
 import sample.cafekiosk.spring.api.domain.product.Product;
 import sample.cafekiosk.spring.api.domain.product.ProductRepository;
 import sample.cafekiosk.spring.api.domain.product.ProductSellingStatus;
@@ -16,9 +15,8 @@ import sample.cafekiosk.spring.api.domain.product.ProductType;
 import sample.cafekiosk.spring.api.service.product.request.ProductCreateServiceRequest;
 import sample.cafekiosk.spring.api.service.product.response.ProductResponse;
 
-@SpringBootTest
-@ActiveProfiles("test")
-class ProductServiceTest {
+
+class ProductServiceTest extends IntegrationSupport {
 
     @Autowired
     ProductService productService;

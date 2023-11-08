@@ -9,7 +9,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import sample.cafekiosk.spring.IntegrationSupport;
 import sample.cafekiosk.spring.api.domain.history.mail.MailSendHistory;
 import sample.cafekiosk.spring.api.domain.history.mail.MailSendHistoryRepository;
 import sample.cafekiosk.spring.api.domain.order.Order;
@@ -20,10 +20,9 @@ import sample.cafekiosk.spring.api.domain.product.Product;
 import sample.cafekiosk.spring.api.domain.product.ProductRepository;
 import sample.cafekiosk.spring.api.domain.product.ProductSellingStatus;
 import sample.cafekiosk.spring.api.domain.product.ProductType;
-import sample.cafekiosk.spring.client.mail.MailSendClient;
 
 @SpringBootTest
-class OrderStatisticsServiceTest {
+class OrderStatisticsServiceTest extends IntegrationSupport {
 
     @Autowired
     private OrderStatisticsService orderStatisticsService;
@@ -39,9 +38,6 @@ class OrderStatisticsServiceTest {
 
     @Autowired
     private MailSendHistoryRepository mailSendHistoryRepository;
-
-    @MockBean
-    private MailSendClient mailSendClient;
 
     @AfterEach
     void tearDown() {
